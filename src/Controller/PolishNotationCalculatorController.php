@@ -37,57 +37,41 @@ class PolishNotationCalculatorController extends AbstractController
     public function submitCalculation(Request $request, string $calculationString)
     {
         $numbers = explode(',', $calculationString);
+        $acceptableOperators = ['+', '-', '/', '*'];
+        $operatorNumbers = [];
         $calculationResult = '';
-        // Check we have all usable options.
-        // If we don't get an array back, we've got an error.
-        // We return the error immediately as we need to feed that back to the user
-        if (is_array($this->checkNumbers($numbers))) {
-            $operationNumbers = array_reverse($this->checkNumbers($numbers)[1]);
-            $operators = array_reverse($this->checkNumbers($numbers)[0]);
-            foreach ($operationNumbers as $index => $number) {
-                $first_number = array_pop($operationNumbers);
-                $second_number = array_pop($operationNumbers);
-                $operator = array_pop($operators);
-                switch ($operator) {
-                    case '+':
-                        $calculationResult = $first_number + $second_number;
-                        break;
-                    case '-':
-                        $calculationResult = $first_number + $second_number;
-                        break;
-                    case '/':
-                        $calculationResult = $first_number + $second_number;
-                        break;
-                    case '*':
-                        $calculationResult = $first_number + $second_number;
-                        break;
-                }
-                array_push($operationNumbers, $calculationResult);
+        // Check we have an array
+        if (is_array($numbers)) {
+            if (in_array(end($numbers), $acceptableOperators)) {
+                $this->errorUnusableOperator('Operators should be at the end.');
             }
-        } else {
-            return $this->checkNumbers($numbers);
+            foreach ($numbers as $index => $number) {
+                if (is_numeric($number)) {
+                    $operationNumbers[] = $number;
+                } elseif (in_array($number, $acceptableOperators)) {
+                    $first_number = array_pop($operationNumbers);
+                    $second_number = array_pop($operationNumbers);
+                    switch ($number) {
+                        case '+':
+                            $calculationResult = $first_number + $second_number;
+                            break;
+                        case '-':
+                            $calculationResult = $first_number - $second_number;
+                            break;
+                        case '/':
+                            $calculationResult = $first_number / $second_number;
+                            break;
+                        case '*':
+                            $calculationResult = $first_number * $second_number;
+                            break;
+                    }
+                    array_push($operationNumbers, $calculationResult);
+                } else {
+                    $this->errorInsufficientParameters('The value of ' . $number . ' is not acceptable.');
+                }
+            }
         }
         return $calculationResult;
-    }
-
-    protected function checkNumbers($numbers)
-    {
-        $acceptableOperators = ['+', '-', '/', '*'];
-        foreach ($numbers as $digit) {
-            $operationNumbers[] = is_numeric($digit) ? $digit : NULL;
-            $operators[] = in_array($digit, $acceptableOperators) ? $digit : NULL;
-            array_filter($operators);
-            array_filter($operationNumbers);
-        }
-        if (!empty($operators) && !empty($operationNumbers)) {
-            return [$operators, $operationNumbers];
-        } elseif (empty($operators)) {
-            return $this->errorUnusableOperator('No operators supplied');
-        } elseif (empty($numbers)) {
-            return $this->errorInsufficientParameters('No numerical parameters supplied');
-        }
-
-        return $this->errorInsufficientParameters('You didn\'t type anything');
     }
 
     /**
