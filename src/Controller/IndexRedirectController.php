@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Annotation\Route;
 
 class IndexRedirectController extends AbstractController
@@ -17,6 +18,6 @@ class IndexRedirectController extends AbstractController
      */
     public function index()
     {
-        $this->redirectToRoute('calculator');
+        return new RedirectResponse($this->generateUrl('calculator'), '302');
     }
 }
