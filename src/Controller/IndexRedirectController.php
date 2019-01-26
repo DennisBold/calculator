@@ -8,12 +8,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class IndexRedirectController extends AbstractController
 {
     /**
+     * A catch all. We have a route at /calculator
+     * which will handle the type of calculator the person wants
+     * to use. We could rewrite that to use "/" but we would rather
+     * they go to "/calculator" as it's a bit more obvious as to what
+     * this site is doing.
      * @Route("/", name="index_redirect")
      */
     public function index()
     {
-        return $this->render('index_redirect/index.html.twig', [
-            'controller_name' => 'IndexRedirectController',
-        ]);
+        $this->redirectToRoute('calculator');
     }
 }

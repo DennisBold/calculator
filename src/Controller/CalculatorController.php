@@ -12,8 +12,7 @@ class CalculatorController extends AbstractController
      */
     public function index()
     {
-        return $this->render('calculator/index.html.twig', [
-            'controller_name' => 'CalculatorController',
-        ]);
+        $options = ['bitwise', 'arithmetic', 'polish'];
+        return $this->render('calculator/index.html.twig', $options);
     }
 }
