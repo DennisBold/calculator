@@ -12,7 +12,7 @@ class PolishNotationCalculatorController extends AbstractController
      * Define a route that can handle operations.
      * We'll generate a map of buttons and operators that work with reverse polish notation.
      * Reverse polish notation is essentially operations in ASM.
-     * @Example: 53+ which would equal 8. 482+- = (4+8) - 2 = 10.
+     * Example: 53+ which would equal 8. 482+- = (4+8) - 2 = 10.
      * @Route("/polish/notation/calculator", name="polish_notation_calculator")
      */
     public function index()
@@ -29,7 +29,7 @@ class PolishNotationCalculatorController extends AbstractController
      * We expect the request to contain a bitwise calculation.
      * This is a base two statement and will most often contain two values consisting of either 1 or 0.
      * We'll then use a gate logic table to decide on the outcome.
-     * @Example: $calculationString = '1,0,+'
+     * Example: $calculationString = '1,0,+'
      * @param Request $request
      * @param string $calculationString
      * @return float|int

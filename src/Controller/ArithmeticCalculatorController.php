@@ -30,7 +30,7 @@ class ArithmeticCalculatorController extends AbstractController
      * We expect the request to contain a calculation string, the special operation is optional.
      * We expect the calculation string to mathematical statement that we would need to execute.
      * Special operations cannot be used in all cases, since we expect them to be a specific value
-     * @Example: $calculationString = '(2+3)/2 * pi'
+     * Example: $calculationString = '(2+3)/2 * pi'
      * @param Request $request
      * @param string $calculationString
      * @param string $specialOperation

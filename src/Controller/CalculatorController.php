@@ -29,8 +29,8 @@ class CalculatorController extends AbstractController
      * We expect the request to contain a bitwise calculation.
      * This is a base two statement and will most often contain two values consisting of either 1 or 0.
      * We'll then use a gate logic table to decide on the outcome.
-     * @Example: $calculationString = '1,0'
-     * @Example: $specialOperation = 'nand'
+     * Example: $calculationString = '1,0'
+     * Example: $specialOperation = 'nand'
      * @param Request $request
      * @param string $calculationString
      * @param string $specialOperation
