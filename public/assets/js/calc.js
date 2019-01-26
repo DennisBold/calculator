@@ -1,18 +1,18 @@
 // Store buttons
-var numbers   = document.getElementsByClassName( "numbers"  );
-var operators = document.getElementsByClassName( "operator" );
+var numbers = document.getElementsByClassName("numbers");
+var operators = document.getElementsByClassName("operator");
 
 // Store screens
-var numberScreen = document.getElementById( "numberscreen" );
-var calcScreen   = document.getElementById( "calcscreen"   );
+var numberScreen = document.getElementById("numberscreen");
+var calcScreen = document.getElementById("calcscreen");
 
 // Store buttons by ID
-var equals     = document.getElementById( "equals" );
-var squareRoot = document.getElementById( "squareroot" );
-var c 		   = document.getElementById( "c" );
-var ce  	   = document.getElementById( "ce" );
-var plusMinus  = document.getElementById( "±" );
-var ans 	   = document.getElementById( "ans" );
+var equals = document.getElementById("equals");
+var squareRoot = document.getElementById("squareroot");
+var c = document.getElementById("c");
+var ce = document.getElementById("ce");
+var plusMinus = document.getElementById("±");
+var ans = document.getElementById("ans");
 
 // Initialize variables
 // ______________________________________________
@@ -42,11 +42,11 @@ var total = 0,
 prevAns = 0;
 
 // Bind numberPressed event to number buttons
-for ( var i = 0; i < numbers.length; i++ ) {
+for (var i = 0; i < numbers.length; i++) {
     numbers[i].onclick = numberPressed;
 }
 // Bind operatorPressed to operator buttons
-for ( var i = 0; i < operators.length; i++ ) {
+for (var i = 0; i < operators.length; i++) {
     operators[i].onclick = operatorPressed;
 }
 
@@ -66,7 +66,7 @@ ans.onclick = prevAnswer;
 function numberPressed() {
 
     // Value of current button
-    var currVal = this.getAttribute( "func" );
+    var currVal = this.getAttribute("func");
 
     // Convert currNumber to string, add new number,
     // convert back to integer
@@ -74,23 +74,23 @@ function numberPressed() {
 
     // If a decimal was entered on last press, add
     // a decimal before the current number being added.
-    if ( prevDecimal ) {
-        stringNum += ( "." + currVal )
-        currNumber = parseFloat( stringNum );
+    if (prevDecimal) {
+        stringNum += ("." + currVal)
+        currNumber = parseFloat(stringNum);
         // Stops other decimals being added to currNumber
         prevDecimal = false;
     } else {
         // If a decimal was added, change addDecimal to true
         // This will add a decimal ro currNumber the next
         // time a button is added
-        if ( currVal == "." && addDecimal == true ) {
+        if (currVal == "." && addDecimal == true) {
             prevDecimal = true;
             addDecimal = false;
-        }  else if ( currVal == "." ){
+        } else if (currVal == ".") {
             return;
         }
         stringNum += currVal.toString();
-        currNumber = parseInt( stringNum );
+        currNumber = parseInt(stringNum);
     }
     // Show current number on number screen
     numberScreen.value = stringNum;
@@ -100,15 +100,15 @@ function numberPressed() {
 function operatorPressed() {
     // Get operator as a string from button func attribute
     var operator = "";
-    operator += this.getAttribute( "func" );
+    operator += this.getAttribute("func");
     // Add operator and current number to current calc
-    currCalc += ( currNumber + " " + operator + " " );
+    currCalc += (currNumber + " " + operator + " ");
     // Add currCalc to calc screen
     calcScreen.value = currCalc;
     // If previous oeprator is defined, calculate new total,
     // Otherwie set total to be current number
-    if ( prevOperator ) {
-        total = findSum[ prevOperator ]( total, currNumber );
+    if (prevOperator) {
+        total = findSum[prevOperator](total, currNumber);
     } else {
         total = currNumber;
     }
@@ -124,8 +124,8 @@ function operatorPressed() {
 
 // Show total in screen when equals is pressed
 function sum() {
-    if ( prevOperator ) {
-        total = findSum[prevOperator]( total, currNumber );
+    if (prevOperator) {
+        total = findSum[prevOperator](total, currNumber);
     }
     resetValues()
     // Use answer as current number
@@ -134,7 +134,7 @@ function sum() {
 
 // Calculate square root
 function calcSquareRoot() {
-    if ( typeof currNumber == "number" ) {
+    if (typeof currNumber == "number") {
         // Convert number to array to check if it's negative
         var stringNum = currNumber.toString();
         var arrNum = stringNum.split("");
@@ -170,13 +170,13 @@ function prevAnswer() {
 // Toggle a plus or minus in front of number
 function togglePlusMinus() {
 
-    if ( typeof currNumber == "number" ) {
+    if (typeof currNumber == "number") {
 
         var stringNum = currNumber.toString();
         var arrNum = stringNum.split("");
 
         // Toggle between - and no -
-        if ( arrNum[0] == "-") {
+        if (arrNum[0] == "-") {
             arrNum.shift();
         } else {
             arrNum.unshift("-");
@@ -198,9 +198,18 @@ function resetValues() {
     currCalc = "";
     currNumber = "";
     // Reset calc screen
-    calcScreen.value   =  currCalc;
+    calcScreen.value = currCalc;
     // Show total in numberScreen
     numberScreen.value = total;
     prevOperator = undefined;
     addDecimal = true;
 }
+
+var findSum = {
+    "+": function(a, b) { return a + b },
+    "-": function(a, b) { return a - b },
+    "/": function(a, b) { return a / b },
+    "*": function(a, b) { return a * b },
+    "√": function(a   ) { return Math.sqrt(a) },
+    "%": function(a, b) { return a % b }
+};
