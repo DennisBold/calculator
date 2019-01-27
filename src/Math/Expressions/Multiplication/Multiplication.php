@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Math\Expressions;
+namespace App\Math\Expressions\Multiplication;
 
-use App\Math\Stack;
-
+use App\Math\Stack\Stack;
+use App\Math\Expressions\Operator\Operator;
 
 class Multiplication extends Operator
 {

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Math\Expressions;
+namespace App\Math\Expressions\Addition;
 
-use App\Math\Stack;
+use App\Math\Stack\Stack;
+use App\Math\Expressions\Operator\Operator;
 
 class Addition extends Operator
 {

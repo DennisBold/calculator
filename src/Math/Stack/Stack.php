@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Math;
+namespace App\Math\Stack;
 
 class Stack
 {

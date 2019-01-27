@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Math\Expressions;
+namespace App\Math\Expressions\Division;
 
-use App\Math\Stack;
+use App\Math\Stack\Stack;
+use App\Math\Expressions\Operator\Operator;
 
 class Division extends Operator
 {

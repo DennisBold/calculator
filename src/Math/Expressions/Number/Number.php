@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Math\Expressions;
+namespace App\Math\Expressions\Number;
 
-use App\Math\Stack;
-use App\Math\TerminalExpression;
+use App\Math\Stack\Stack;
+use App\Math\TerminalExpression\TerminalExpression;
 
 
 class Number extends TerminalExpression

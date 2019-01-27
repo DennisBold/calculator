@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Math\Expressions;
+namespace App\Math\Expressions\Parenthesis;
 
-use App\Math\Stack;
-use App\Math\TerminalExpression;
+use App\Math\Stack\Stack;
+use App\Math\TerminalExpression\TerminalExpression;
 
 class Parenthesis extends TerminalExpression
 {

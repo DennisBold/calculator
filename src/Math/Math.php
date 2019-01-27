@@ -2,14 +2,15 @@
 
 namespace App\Math;
 
-use App\Math\Stack;
-use App\Math\Expressions;
-use App\Math\Expressions\Number;
-use App\Math\Expressions\Addition;
-use App\Math\Expressions\Subtraction;
-use App\Math\Expressions\Multiplication;
-use App\Math\Expressions\Division;
-use App\Math\Expressions\Parenthesis;
+use App\Math\Stack\Stack;
+use App\Math\TerminalExpression\TerminalExpression;
+use App\Math\Expressions\Addition\Addition;
+use App\Math\Expressions\Division\Division;
+use App\Math\Expressions\Multiplication\Multiplication;
+use App\Math\Expressions\Number\Number;
+use App\Math\Expressions\Operator\Operator;
+use App\Math\Expressions\Parenthesis\Parenthesis;
+use App\Math\Expressions\Subtraction\Subtraction;
 
 class Math
 {
@@ -28,7 +29,7 @@ class Math
 
     /**
      * @param $string
-     * @return \Math\Stack
+     * @return Stack
      * @throws \Exception
      */
     public function parse($string)
@@ -66,7 +67,7 @@ class Math
     }
 
     /**
-     * @param \Math\Stack $stack
+     * @param Stack $stack
      * @return string
      * @throws \Exception
      */
@@ -95,7 +96,7 @@ class Math
     }
 
     /**
-     * @param \Math\Stack $stack
+     * @param Stack $stack
      * @return string
      * @throws \RuntimeException
      */
@@ -113,8 +114,8 @@ class Math
 
     /**
      * @param TerminalExpression $expression
-     * @param \Math\Stack $output
-     * @param \Math\Stack $operators
+     * @param Stack $output
+     * @param Stack $operators
      */
     protected function parseParenthesis(TerminalExpression $expression, Stack $output, Stack $operators)
     {
@@ -138,8 +139,8 @@ class Math
 
     /**
      * @param TerminalExpression $expression
-     * @param \Math\Stack $output
-     * @param \Math\Stack $operators
+     * @param Stack $output
+     * @param Stack $operators
      */
     protected function parseOperator(TerminalExpression $expression, Stack $output, Stack $operators)
     {
