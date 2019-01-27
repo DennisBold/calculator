@@ -17,7 +17,7 @@ class BitwiseCalculatorController extends AbstractController
     public function index()
     {
         $numericalButtons = ['0', '1'];
-        $operatorButtons = ['NAND', 'AND', 'OR', 'XOR'];
+        $operatorButtons  = ['NAND', 'AND', 'OR', 'XOR'];
 
         return $this->render('bitwise_calculator/index.html.twig',
             ['numbers' => $numericalButtons, 'operators' => $operatorButtons]);
@@ -30,77 +30,86 @@ class BitwiseCalculatorController extends AbstractController
      * We'll then use a gate logic table to decide on the outcome.
      * Example: $calculationString = '1,0'
      * Example: $specialOperation = 'nand'
+     * @Route("/arithmetic/calculator/submit", name="arithmetic_calculator_submit")
      * @param Request $request
-     * @param string $calculationString
-     * @param string $specialOperation
      * @return float|int
      */
-    public function submitCalculation(Request $request, string $calculationString, string $specialOperation)
+    public function submitCalculation(Request $request)
     {
-        $specialOperation = strtolower(trim($specialOperation));
-        $numbers = explode(',', $calculationString);
-        if (empty($numbers[0]) && empty($numbers[1])) {
-            $this->errorInsufficientParameters($specialOperation);
+        $calculationString = str_replace(' ', ',', preg_replace('!\s+!', ' ', trim($request->get('calculationString'))));
+        $numbers           = explode(',', $calculationString);
+        $specialOperation  = $this->getOperation($numbers);
+        $numbers           = $this->getNumbers($numbers);
+        if ($specialOperation != FALSE) {
+            $argumentCheck = $this->checkArguments($numbers, $specialOperation);
+            if ($argumentCheck !== TRUE) {
+                switch ($specialOperation) {
+                    case 'nand':
+                        return !($this->and($numbers[0], $numbers[1]));
+                    case 'and':
+                        return $this->and($numbers[0], $numbers[1]);
+                    case 'or':
+                        return $this->xor($numbers[0], $numbers[1]);
+                    case 'xor':
+                        return $this->or($numbers[0], $numbers[1]);
+                    default:
+                        return $this->errorUnusableOperator($specialOperation);
+                }
+            } else {
+                return $argumentCheck;
+            }
+        } else {
+            return $this->errorUnusableOperator('');
         }
-        switch ($specialOperation) {
-            case 'nand':
-                return $this->nand(explode(',', $calculationString));
-            case 'and':
-                return $this->and(explode(',', $calculationString));
-            case 'or':
-                return $this->xor(explode(',', $calculationString));
-            case 'xor':
-                return $this->or(explode(',', $calculationString));
-            default:
-                return $this->errorUnusableOperator($specialOperation);
+    }
+
+    protected function checkArguments($numbers, $operator = '')
+    {
+        if (count($numbers) < 3 || count($numbers) > 3) {
+            return $this->errorArguments($operator);
         }
+        if (empty($numbers[0]) && empty($numbers[2])) {
+            return $this->errorInsufficientParameters($operator);
+        }
+        return TRUE;
     }
 
     /**
      * True if both A + B are 0
-     * @param $numbers
+     * @param $firstNumber
+     * @param $secondNumber
      * @return bool
      */
-    protected function nand($numbers)
+    protected function and($firstNumber, $secondNumber)
     {
-        $a = ($numbers[0] === 1) ? TRUE : FALSE;
-        $b = ($numbers[1] === 1) ? TRUE : FALSE;
-        return (!$a && !$b);
-    }
-
-    /**
-     * True if $a and $b are true
-     * @param $numbers
-     * @return bool
-     */
-    protected function and($numbers)
-    {
-        $a = ($numbers[0] === 1) ? TRUE : FALSE;
-        $b = ($numbers[1] === 1) ? TRUE : FALSE;
+        $a = ($firstNumber === 1) ? TRUE : FALSE;
+        $b = ($secondNumber === 1) ? TRUE : FALSE;
         return ($a && $b);
     }
 
     /**
      * True if $a or $b is true
-     * @param $numbers
+     * @param $firstNumber
+     * @param $secondNumber
      * @return bool
      */
-    protected function or($numbers)
+    protected function or($firstNumber, $secondNumber)
     {
-        $a = ($numbers[0] === 1) ? TRUE : FALSE;
-        $b = ($numbers[1] === 1) ? TRUE : FALSE;
+        $a = ($firstNumber === 1) ? TRUE : FALSE;
+        $b = ($secondNumber === 1) ? TRUE : FALSE;
         return ($a || $b);
     }
 
     /**
      * True if $a or $b is true, not both
-     * @param $numbers
+     * @param $firstNumber
+     * @param $secondNumber
      * @return bool
      */
-    protected function xor($numbers)
+    protected function xor($firstNumber, $secondNumber)
     {
-        $a = ($numbers[0] === 1) ? TRUE : FALSE;
-        $b = ($numbers[1] === 1) ? TRUE : FALSE;
+        $a = ($firstNumber === 1) ? TRUE : FALSE;
+        $b = ($secondNumber === 1) ? TRUE : FALSE;
         return ($a || !$b) || (!$a || $b);
     }
 
@@ -125,5 +134,38 @@ class BitwiseCalculatorController extends AbstractController
     {
         return $this->renderView('error/error.response.html.twig',
             ['operation' => $operation, 'message' => 'Insufficient parameters', 'type' => 'Error']);
+    }
+
+    /**
+     * Return an error as there were not enough parameters supplied
+     * @param string $operation
+     * @return string
+     */
+    protected function errorArguments(string $operation)
+    {
+        return $this->renderView('error/error.response.html.twig',
+            ['operation' => $operation, 'message' => 'Bitwise calculations can only be done against two numbers', 'type' => 'Error']);
+    }
+
+    protected function getOperation(array $numbers)
+    {
+        $operators = ['nand', 'and', 'or', 'xor'];
+        foreach ($operators as $operator) {
+            if (in_array(strtolower($operator), $numbers)) {
+                return strtolower($operator);
+            }
+        }
+        return FALSE;
+    }
+
+    protected function getNumbers($numbers)
+    {
+        $actualNumbers = [];
+        foreach ($numbers as $number) {
+            if (is_numeric($number)) {
+                $actualNumbers[] = $numbers;
+            }
+        }
+        return $actualNumbers;
     }
 }
