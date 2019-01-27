@@ -17,7 +17,6 @@ var nand = document.getElementById("nand");
 var and = document.getElementById("and");
 var or = document.getElementById("or");
 var nor = document.getElementById("nor");
-var calculate = document.getElementById("calculate");
 
 // Buttons that do all the work
 c.onclick = clearAll;
@@ -127,11 +126,11 @@ function resetValues() {
 }
 
 function togglePlusMinus() {
-    if ( typeof currNumber == "number" ) {
+    if (typeof currNumber == "number") {
         var stringNum = currNumber.toString();
         var arrNum = stringNum.split("");
         // Toggle between - and no -
-        if ( arrNum[0] == "-") {
+        if (arrNum[0] == "-") {
             arrNum.shift();
         } else {
             arrNum.unshift("-");
@@ -149,8 +148,24 @@ function clearCurrNumber() {
     addDecimal = true;
 }
 
-function ajaxCalculate(calculationString) {
+function ajaxCalculate(calculationString, specialOperation) {
     $.ajax({
-
+        type: 'POST',
+        url: $(location).attr("href") + '/submit',
+        data: [calculationString, specialOperation],
+        beforeSend: function () {
+            // @ToDo perhaps add a loading bar?
+        },
+        success: function (data) {
+            // @ToDo: Send data back to HTML
+        },
+        error: function (xhr) {
+            alert("Error occurred, please try again.");
+            $('.message').append(xhr.statusText + xhr.responseText);
+        },
+        complete: function () {
+            // @ToDo Remove the factious loading bar?
+        },
+        dataType: 'JSON'
     });
 }

@@ -12,13 +12,13 @@ class ArithmeticCalculatorController extends AbstractController
      * Define a route that can handle operations.
      * We'll generate a map of buttons, since it's a calculator and we
      * want it to be useful, we'll add a few extra operators. Mainly
-     * we'll add sqrt(), pi(), avg(), min(), max().
+     * we'll add sqrt(), pi()
      * @Route("/arithmetic/calculator", name="arithmetic_calculator")
      */
     public function index()
     {
         $numericalButtons = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        $operatorButtons = ['+', '-', '/', '*', 'sqrt', 'pi', 'avg', 'min', 'max'];
+        $operatorButtons  = ['+', '-', '/', '*', 'sqrt', 'pi'];
 
         return $this->render('arithmetic_calculator/index.html.twig',
             ['numbers' => $numericalButtons, 'operators' => $operatorButtons]);
@@ -33,23 +33,11 @@ class ArithmeticCalculatorController extends AbstractController
      * Example: $calculationString = '(2+3)/2 * pi'
      * @param Request $request
      * @param string $calculationString
-     * @param string $specialOperation
      * @return float|int
      */
-    public function submitCalculation(Request $request, string $calculationString, string $specialOperation)
+    public function submitCalculation(Request $request, string $calculationString)
     {
-        switch ($specialOperation) {
-            case 'sqrt':
-                return $this->sqrt((float)$calculationString);
-            case 'avg':
-                return $this->avg(explode(',', $calculationString));
-            case 'min':
-                return $this->min(explode(',', $calculationString));
-            case 'max':
-                return $this->max(explode(',', $calculationString));
-            default:
-                return $this->doMath($calculationString);
-        }
+        return $this->doMath($calculationString);
     }
 
     /**
@@ -62,33 +50,58 @@ class ArithmeticCalculatorController extends AbstractController
         return sqrt($number);
     }
 
-    /**
-     * Return the average of numbers in an array
-     * @param array $numbers
-     * @return float|int
-     */
-    protected function avg(array $numbers)
+    protected function doMath($calculationString)
     {
-        return array_sum($numbers) / count($numbers);
+        $string          = explode(',', $calculationString);
+        $operatorButtons = ['+', '-', '/', '*', 'sqrt'];
+        $operators       = [];
+        $numbers         = [];
+        foreach ($string as $value) {
+            if ($value == 'pi') {
+                $numbers[] = pi();
+            } elseif (is_numeric($value)) {
+                $numbers[] = $value;
+            } elseif (in_array($value, $operatorButtons)) {
+                $operators[] = $value;
+            }
+        }
+        $numbers   = array_reverse($numbers);
+        $operators = array_reverse($operators);
+        foreach ($operators as $operator) {
+            $numbers[] = $operator;
+        }
     }
 
-    /**
-     * Return the maximum value from an array of numbers
-     * @param array $numbers
-     * @return float|int
-     */
-    protected function max(array $numbers)
+    protected function reversePolishCalculation(array $numberArray)
     {
-        return max($numbers);
-    }
-
-    /**
-     * Return the smallest value from an array of numbers
-     * @param array $numbers
-     * @return float|int
-     */
-    protected function min(array $numbers)
-    {
-        return min($numbers);
+        $numbers         = [];
+        $operatorButtons = ['+', '-', '/', '*', 'sqrt'];
+        $result          = '';
+        foreach ($numberArray as $number) {
+            if (is_numeric($number)) {
+                $numbers[] = $number;
+            } elseif (in_array($number, $operatorButtons)) {
+                if (in_array($number, $operatorButtons)) {
+                    switch ($number) {
+                        case "+":
+                            $result = array_pop($numbers) + array_pop($numbers);
+                            break;
+                        case "-":
+                            $result = array_pop($numbers) - array_pop($numbers);
+                            break;
+                        case "*":
+                            $result = array_pop($numbers) * array_pop($numbers);
+                            break;
+                        case "/":
+                            $result = array_pop($numbers) / array_pop($numbers);
+                            break;
+                        case 'sqrt':
+                            $result = $this->sqrt(array_pop($numbers));
+                    }
+                    array_push($numbers, $result);
+                }
+            }
+        }
+        return $result;
     }
 }
