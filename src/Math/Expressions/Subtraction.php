@@ -1,8 +1,8 @@
 <?php
 
-namespace Math\Expressions;
+namespace App\Math\Expressions;
 
-use Math\Stack;
+use App\Math\Stack;
 
 class Subtraction extends Operator
 {

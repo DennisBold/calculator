@@ -1,8 +1,8 @@
 <?php
 
-namespace Math\Expressions;
+namespace App\Math\Expressions;
 
-use Math\TerminalExpression;
+use App\Math\TerminalExpression;
 
 
 abstract class Operator extends TerminalExpression

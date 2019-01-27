@@ -1,13 +1,13 @@
 <?php
 
-namespace Math;
+namespace App\Math;
 
-use Math\Expressions\Number;
-use Math\Expressions\Addition;
-use Math\Expressions\Subtraction;
-use Math\Expressions\Multiplication;
-use Math\Expressions\Division;
-use Math\Expressions\Parenthesis;
+use App\Math\Expressions\Number;
+use App\Math\Expressions\Addition;
+use App\Math\Expressions\Subtraction;
+use App\Math\Expressions\Multiplication;
+use App\Math\Expressions\Division;
+use App\Math\Expressions\Parenthesis;
 
 abstract class TerminalExpression
 {
