@@ -79,7 +79,6 @@ function addNumberAndCalculate() {
     // Get operator as a string from button func attribute
     var operator = "";
     operator += this.getAttribute("func");
-
     // Add operator and current number to current calc
     currCalc += (currNumber + " ");
     // Add currCalc to calc screen
@@ -87,7 +86,7 @@ function addNumberAndCalculate() {
     // Reset number screen and curr number
     numberScreen.value = 0;
     currNumber = "";
-    ajaxCalculate(calcScreen.value);
+    ajaxCalculate(calcScreen.value, '');
 }
 
 function operatorPressed() {
@@ -105,12 +104,9 @@ function operatorPressed() {
 }
 
 function clearAll() {
-
     total = 0;
-
     // Reset screen values
     resetValues();
-
 }
 
 function resetValues() {
@@ -149,14 +145,16 @@ function clearCurrNumber() {
 }
 
 function ajaxCalculate(calculationString, specialOperation) {
+    console.log(calculationString);
     $.ajax({
         type: 'POST',
         url: $(location).attr("href") + '/submit',
-        data: [calculationString, specialOperation],
+        data: {calculationString: calculationString, specialOperation: specialOperation},
         beforeSend: function () {
             // @ToDo perhaps add a loading bar?
         },
         success: function (data) {
+            console.log(data);
             // @ToDo: Send data back to HTML
         },
         error: function (xhr) {

@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use Math\Math;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -33,12 +35,15 @@ class ArithmeticCalculatorController extends AbstractController
      * Example: $calculationString = '(2+3)/2 * pi'
      * @Route("/arithmetic/calculator/submit", name="arithmetic_calculator_submit")
      * @param Request $request
-     * @param string $calculationString
-     * @return float|int
+     * @return mixed
+     * @throws \Exception
      */
-    public function submitCalculation(Request $request, string $calculationString)
+    public function submitCalculation(Request $request)
     {
-        return $this->doMath($calculationString);
+        $calculationString = str_replace(' ', ',', preg_replace('!\s+!', ' ', trim($request->get('calculationString'))));
+        $result            = $this->doMath($calculationString);
+        print_r($result);
+        die();
     }
 
     /**
@@ -51,58 +56,22 @@ class ArithmeticCalculatorController extends AbstractController
         return sqrt($number);
     }
 
+    /**
+     * @param $calculationString
+     * @return string
+     * @throws \Exception
+     */
     protected function doMath($calculationString)
     {
-        $string          = explode(',', $calculationString);
-        $operatorButtons = ['+', '-', '/', '*', 'sqrt'];
-        $operators       = [];
-        $numbers         = [];
-        foreach ($string as $value) {
-            if ($value == 'pi') {
-                $numbers[] = pi();
-            } elseif (is_numeric($value)) {
-                $numbers[] = $value;
-            } elseif (in_array($value, $operatorButtons)) {
-                $operators[] = $value;
+        $math                      = new Math();
+        $explodedCalculationString = explode(',', $calculationString);
+        foreach ($explodedCalculationString as $index => $pattern) {
+            if ($pattern == 'pi') {
+                $explodedCalculationString[$index] = pi();
             }
         }
-        $numbers   = array_reverse($numbers);
-        $operators = array_reverse($operators);
-        foreach ($operators as $operator) {
-            $numbers[] = $operator;
-        }
-    }
+        $result = $math->evaluate(implode(' ', $explodedCalculationString));
 
-    protected function reversePolishCalculation(array $numberArray)
-    {
-        $numbers         = [];
-        $operatorButtons = ['+', '-', '/', '*', 'sqrt'];
-        $result          = '';
-        foreach ($numberArray as $number) {
-            if (is_numeric($number)) {
-                $numbers[] = $number;
-            } elseif (in_array($number, $operatorButtons)) {
-                if (in_array($number, $operatorButtons)) {
-                    switch ($number) {
-                        case "+":
-                            $result = array_pop($numbers) + array_pop($numbers);
-                            break;
-                        case "-":
-                            $result = array_pop($numbers) - array_pop($numbers);
-                            break;
-                        case "*":
-                            $result = array_pop($numbers) * array_pop($numbers);
-                            break;
-                        case "/":
-                            $result = array_pop($numbers) / array_pop($numbers);
-                            break;
-                        case 'sqrt':
-                            $result = $this->sqrt(array_pop($numbers));
-                    }
-                    array_push($numbers, $result);
-                }
-            }
-        }
         return $result;
     }
 }
