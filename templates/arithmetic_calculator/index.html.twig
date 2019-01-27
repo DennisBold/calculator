@@ -35,15 +35,8 @@
                             </div>
                             <div class="col-xs-5 calc__operatorpad p-a-0">
                                 {% for button in operators %}
-                                    {% if button == 'sqrt' %}
-                                        <button class="btn btn-lg btn-secondary btn-lg col-xs-6" id="squareroot" func="√"
-                                                type="button">
-                                            √
-                                        </button>
-                                    {% else %}
                                         <button class="btn btn-lg btn-secondary col-xs-6 operator" func="{{ button }}" type="button">{{ button }}
                                         </button>
-                                    {% endif %}
                                 {% endfor %}
                                 <button class="btn btn-lg btn-secondary col-xs-6" func="=" id="equals" type="button">=</button>
                             </div>

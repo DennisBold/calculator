@@ -14,13 +14,13 @@ class ArithmeticCalculatorController extends AbstractController
      * Define a route that can handle operations.
      * We'll generate a map of buttons, since it's a calculator and we
      * want it to be useful, we'll add a few extra operators. Mainly
-     * we'll add sqrt(), pi()
+     * we'll add pi()
      * @Route("/arithmetic/calculator", name="arithmetic_calculator")
      */
     public function index()
     {
         $numericalButtons = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        $operatorButtons  = ['+', '-', '/', '*', 'sqrt', 'pi'];
+        $operatorButtons  = ['+', '-', '/', '*', 'pi'];
 
         return $this->render('arithmetic_calculator/index.html.twig',
             ['numbers' => $numericalButtons, 'operators' => $operatorButtons]);
