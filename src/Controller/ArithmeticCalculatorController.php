@@ -31,6 +31,7 @@ class ArithmeticCalculatorController extends AbstractController
      * We expect the calculation string to mathematical statement that we would need to execute.
      * Special operations cannot be used in all cases, since we expect them to be a specific value
      * Example: $calculationString = '(2+3)/2 * pi'
+     * @Route("/arithmetic/calculator/submit", name="arithmetic_calculator_submit")
      * @param Request $request
      * @param string $calculationString
      * @return float|int
