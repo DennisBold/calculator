@@ -1,9 +1,9 @@
-#ABOUT THIS
+# ABOUT THIS CALCULATOR
 ____________
 This is a small and simple calculator that can be expanded (hopefully).
 It calculates basic arithmetic using Reverse Polish Notation.
 
-##Vhost
+## Vhost
 You'll need a vhost to get this up and running. Here's mine:
 
 ```<VirtualHost *:80>
