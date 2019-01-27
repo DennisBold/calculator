@@ -7,7 +7,7 @@ var numberScreen = document.getElementById("numberscreen");
 var calcScreen = document.getElementById("calcscreen");
 
 // Store buttons by ID
-var equals = document.getElementById("=");
+var equals = document.getElementById("equals");
 var squareRoot = document.getElementById("squareroot");
 var c = document.getElementById("c");
 var ce = document.getElementById("ce");
@@ -20,9 +20,9 @@ var nor = document.getElementById("nor");
 var calculate = document.getElementById("calculate");
 
 // Buttons that do all the work
-calculate.onclick = ajaxCalculate;
 c.onclick = clearAll;
 ce.onclick = clearCurrNumber;
+equals.onclick = addNumberAndCalculate;
 plusMinus.onclick = togglePlusMinus;
 
 // Init variables
@@ -74,6 +74,21 @@ function numberPressed() {
     }
     // Show current number on number screen
     numberScreen.value = stringNum;
+}
+
+function addNumberAndCalculate() {
+    // Get operator as a string from button func attribute
+    var operator = "";
+    operator += this.getAttribute("func");
+
+    // Add operator and current number to current calc
+    currCalc += (currNumber + " ");
+    // Add currCalc to calc screen
+    calcScreen.value = currCalc;
+    // Reset number screen and curr number
+    numberScreen.value = 0;
+    currNumber = "";
+    ajaxCalculate(calcScreen.value);
 }
 
 function operatorPressed() {
@@ -134,6 +149,8 @@ function clearCurrNumber() {
     addDecimal = true;
 }
 
-function ajaxCalculate() {
-    alert('ToDo!');
+function ajaxCalculate(calculationString) {
+    $.ajax({
+
+    });
 }
