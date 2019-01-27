@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use phpDocumentor\Reflection\Types\Mixed_;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -30,9 +32,9 @@ class BitwiseCalculatorController extends AbstractController
      * We'll then use a gate logic table to decide on the outcome.
      * Example: $calculationString = '1,0'
      * Example: $specialOperation = 'nand'
-     * @Route("/arithmetic/calculator/submit", name="arithmetic_calculator_submit")
+     * @Route("/bitwise/calculator/submit", name="bitwise_calculator_submit")
      * @param Request $request
-     * @return float|int
+     * @return JsonResponse|string
      */
     public function submitCalculation(Request $request)
     {
@@ -42,36 +44,58 @@ class BitwiseCalculatorController extends AbstractController
         $numbers           = $this->getNumbers($numbers);
         if ($specialOperation != FALSE) {
             $argumentCheck = $this->checkArguments($numbers, $specialOperation);
-            if ($argumentCheck !== TRUE) {
+            if ($argumentCheck == TRUE) {
                 switch ($specialOperation) {
-                    case 'nand':
-                        return !($this->and($numbers[0], $numbers[1]));
                     case 'and':
-                        return $this->and($numbers[0], $numbers[1]);
+                        $outcome = $this->and($numbers[0], $numbers[1]);
+                        break;
+                    case 'nand':
+                        $outcome = $this->nand($numbers[0], $numbers[1]);
+                        break;
                     case 'or':
-                        return $this->xor($numbers[0], $numbers[1]);
+                        $outcome = $this->or($numbers[0], $numbers[1]);
+                        break;
                     case 'xor':
-                        return $this->or($numbers[0], $numbers[1]);
+                        $outcome = $this->xor($numbers[0], $numbers[1]);
+                        break;
                     default:
-                        return $this->errorUnusableOperator($specialOperation);
+                        return new JsonResponse('Dennis3' . $this->errorUnusableOperator($specialOperation));
                 }
             } else {
-                return $argumentCheck;
+                return new JsonResponse(' Dennis' . $argumentCheck);
             }
         } else {
-            return $this->errorUnusableOperator('');
+            return new JsonResponse('Dennis 2 ' . $this->errorUnusableOperator(''));
         }
+        $outcome = ($outcome == TRUE) ? ' TRUE' : ' FALSE';
+        return new JsonResponse($outcome);
     }
 
     protected function checkArguments($numbers, $operator = '')
     {
-        if (count($numbers) < 3 || count($numbers) > 3) {
+        if (count($numbers) < 2 || count($numbers) > 2) {
             return $this->errorArguments($operator);
         }
-        if (empty($numbers[0]) && empty($numbers[2])) {
-            return $this->errorInsufficientParameters($operator);
-        }
         return TRUE;
+    }
+
+    /**
+     * True if both A + B are different
+     * @param $firstNumber
+     * @param $secondNumber
+     * @return bool
+     */
+    protected function nand($firstNumber, $secondNumber)
+    {
+        $a = ($firstNumber == '1') ? TRUE : FALSE;
+        $b = ($secondNumber == '1') ? TRUE : FALSE;
+        if ($a && $b) {
+            return FALSE;
+        } elseif (!$a && !$b) {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
     }
 
     /**
@@ -82,9 +106,15 @@ class BitwiseCalculatorController extends AbstractController
      */
     protected function and($firstNumber, $secondNumber)
     {
-        $a = ($firstNumber === 1) ? TRUE : FALSE;
-        $b = ($secondNumber === 1) ? TRUE : FALSE;
-        return ($a && $b);
+        $a = ($firstNumber == '1') ? TRUE : FALSE;
+        $b = ($secondNumber == '1') ? TRUE : FALSE;
+        if ($a && $b) {
+            return TRUE;
+        } elseif (!$a && !$b) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     /**
@@ -95,9 +125,17 @@ class BitwiseCalculatorController extends AbstractController
      */
     protected function or($firstNumber, $secondNumber)
     {
-        $a = ($firstNumber === 1) ? TRUE : FALSE;
-        $b = ($secondNumber === 1) ? TRUE : FALSE;
-        return ($a || $b);
+        $a = ($firstNumber == '1') ? TRUE : FALSE;
+        $b = ($secondNumber == '1') ? TRUE : FALSE;
+        if ($a && !$b) {
+            return TRUE;
+        } elseif (!$a && $b) {
+            return TRUE;
+        } elseif ($a && $b) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
     /**
@@ -108,9 +146,15 @@ class BitwiseCalculatorController extends AbstractController
      */
     protected function xor($firstNumber, $secondNumber)
     {
-        $a = ($firstNumber === 1) ? TRUE : FALSE;
-        $b = ($secondNumber === 1) ? TRUE : FALSE;
-        return ($a || !$b) || (!$a || $b);
+        $a = ($firstNumber == '1') ? TRUE : FALSE;
+        $b = ($secondNumber == '1') ? TRUE : FALSE;
+        if (!$a && !$b) {
+            return TRUE;
+        } elseif (!$a && !$b) {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 
 
@@ -149,9 +193,9 @@ class BitwiseCalculatorController extends AbstractController
 
     protected function getOperation(array $numbers)
     {
-        $operators = ['nand', 'and', 'or', 'xor'];
+        $operators = ['NAND', 'AND', 'OR', 'XOR'];
         foreach ($operators as $operator) {
-            if (in_array(strtolower($operator), $numbers)) {
+            if (in_array(trim($operator), $numbers)) {
                 return strtolower($operator);
             }
         }
@@ -163,7 +207,7 @@ class BitwiseCalculatorController extends AbstractController
         $actualNumbers = [];
         foreach ($numbers as $number) {
             if (is_numeric($number)) {
-                $actualNumbers[] = $numbers;
+                $actualNumbers[] = $number;
             }
         }
         return $actualNumbers;
