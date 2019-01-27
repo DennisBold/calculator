@@ -154,11 +154,11 @@ function ajaxCalculate(calculationString, specialOperation) {
             // @ToDo perhaps add a loading bar?
         },
         success: function (data) {
-            console.log(data);
-            // @ToDo: Send data back to HTML
+            var message = '<div class="alert alert-success" role="alert"> Your answer is: ' + data + '</div>';
+            $('.messae').empty().append(message);
+            numberScreen.value = data;
         },
         error: function (xhr) {
-            alert("Error occurred, please try again.");
             $('.message').append(xhr.statusText + xhr.responseText);
         },
         complete: function () {

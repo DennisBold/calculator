@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use Math\Math;
+use App\Math\Math;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -42,8 +42,7 @@ class ArithmeticCalculatorController extends AbstractController
     {
         $calculationString = str_replace(' ', ',', preg_replace('!\s+!', ' ', trim($request->get('calculationString'))));
         $result            = $this->doMath($calculationString);
-        print_r($result);
-        die();
+        return new JsonResponse($result);
     }
 
     /**
