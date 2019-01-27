@@ -18,7 +18,7 @@ class ArithmeticCalculatorController extends AbstractController
     public function index()
     {
         $numericalButtons = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-        $operatorButtons = ['+', '-', '/', '*', '=', 'sqrt', 'pi', 'avg', 'min', 'max'];
+        $operatorButtons = ['+', '-', '/', '*', 'sqrt', 'pi', 'avg', 'min', 'max'];
 
         return $this->render('arithmetic_calculator/index.html.twig',
             ['numbers' => $numericalButtons, 'operators' => $operatorButtons]);
